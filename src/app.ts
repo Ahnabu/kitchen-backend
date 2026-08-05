@@ -17,7 +17,7 @@ import galleryRoutes from './routes/gallery.routes';
 import inventoryRoutes from './routes/inventory.routes';
 import staffRoutes from './routes/staff.routes';
 import analyticsRoutes from './routes/analytics.routes';
-
+import { sequelize } from './models';
 
 const app = express();
 
@@ -44,6 +44,22 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Database synchronization for serverless/cold starts
+let isSynced = false;
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+  if (!isSynced && process.env.NODE_ENV !== 'test') {
+    try {
+      console.log('🔄 First request received. Synchronizing database tables...');
+      await sequelize.sync();
+      isSynced = true;
+      console.log('✅ Database tables synchronized successfully.');
+    } catch (err) {
+      console.error('❌ Database synchronization failed:', err);
+    }
+  }
+  next();
+});
 
 // Static uploads directory mapping
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
