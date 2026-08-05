@@ -1,3 +1,5 @@
+import 'mysql2';
+import 'sqlite3';
 import app from '../src/app';
 import { sequelize } from '../src/models';
 
