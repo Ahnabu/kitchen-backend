@@ -7,9 +7,18 @@ const databaseUrl = process.env.DATABASE_URL;
 
 if (databaseUrl) {
   console.log('Connecting to database using DATABASE_URL...');
-  // Check if connection is to mysql or sqlite (helpful for testing)
   const isMysql = databaseUrl.startsWith('mysql');
-  sequelize = new Sequelize(databaseUrl, {
+  
+  // Strip ssl-mode parameters to prevent mysql2 from logging warnings/errors
+  let cleanUrl = databaseUrl;
+  if (isMysql) {
+    cleanUrl = cleanUrl
+      .replace(/([\?&])ssl-mode=[^&]+/gi, '$1')
+      .replace(/([\?&])sslmode=[^&]+/gi, '$1')
+      .replace(/[\?&]+$/, ''); // clean up trailing query characters
+  }
+
+  sequelize = new Sequelize(cleanUrl, {
     dialect: isMysql ? 'mysql' : 'sqlite',
     logging: process.env.NODE_ENV === 'development' ? console.log : false,
     dialectOptions: isMysql
