@@ -48,6 +48,31 @@ app.use(cookieParser());
 // Static uploads directory mapping
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// Root welcome routes
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'Welcome to The Kitchen Malta API!',
+    documentation: 'https://github.com/Ahnabu/kitchen-backend#readme'
+  });
+});
+
+app.get('/api/v1', (req: Request, res: Response) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'The Kitchen Malta API version 1 is active.',
+    endpoints: {
+      auth: '/api/v1/auth',
+      menu: '/api/v1/menu',
+      orders: '/api/v1/orders',
+      reservations: '/api/v1/reservations',
+      reviews: '/api/v1/reviews',
+      gallery: '/api/v1/gallery',
+      status: '/api/v1/status'
+    }
+  });
+});
+
 // Base status checking route
 app.use('/api/v1/status', (req: Request, res: Response) => {
   res.status(200).json({
