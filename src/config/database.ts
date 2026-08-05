@@ -40,10 +40,13 @@ if (databaseUrl) {
   );
 } else {
   const dbFile = process.env.NODE_ENV === 'test' ? 'database.test.sqlite' : 'database.sqlite';
-  console.warn(`⚠️ Cloud/Local MySQL config not found or set to localhost. Falling back to persistent ${dbFile}...`);
+  const storagePath = process.env.VERCEL
+    ? `/tmp/${dbFile}`
+    : path.join(__dirname, `../../${dbFile}`);
+  console.warn(`⚠️ Cloud/Local MySQL config not found or set to localhost. Falling back to persistent ${storagePath}...`);
   sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: path.join(__dirname, `../../${dbFile}`),
+    storage: storagePath,
     logging: false,
   });
 }
