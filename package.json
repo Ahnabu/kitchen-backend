@@ -12,8 +12,8 @@
     "test": "tsx test/runAll.ts"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Ahnabu (https://github.com/Ahnabu)",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "bcryptjs": "^3.0.3",
